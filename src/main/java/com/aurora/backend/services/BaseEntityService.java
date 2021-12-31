@@ -5,6 +5,7 @@ import com.aurora.backend.entity.HasDateUpdated;
 import com.aurora.backend.entity.IEntity;
 import com.aurora.backend.entity.JpaEntity;
 import com.aurora.backend.entity.core.EntityField;
+import com.aurora.backend.event.EntityCreatedEvent;
 import com.aurora.backend.exception.PreUpdateException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -64,6 +65,9 @@ public abstract class BaseEntityService<E extends JpaEntity<ID>, ID extends Seri
     }
 
     protected void postCreate(final E entity) {
+        getApplicationEventPublisher().publishEvent(
+                new EntityCreatedEvent<>(entity, getAuthenticatedUser(),
+                        String.format("%s %s is created", this.TYPE, entity.getId())));
     }
 
     protected E preUpdate(final E pEntity, final E entity) {

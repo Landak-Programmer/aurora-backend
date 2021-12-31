@@ -5,12 +5,15 @@ import com.aurora.backend.security.IAuthenticationFacade;
 import com.aurora.backend.security.UserAware;
 import com.aurora.backend.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.Authentication;
 
 public class BaseService {
 
     @Autowired
     private IAuthenticationFacade authenticationFacade;
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
 
     public UserAware getAuthenticatedUser() throws IllegalUserTypeException {
         Authentication authentication = authenticationFacade.getAuthentication();
@@ -26,6 +29,10 @@ public class BaseService {
             }
         }
         throw new IllegalUserTypeException("User are not recognized!");
+    }
+
+    protected ApplicationEventPublisher getApplicationEventPublisher() {
+        return applicationEventPublisher;
     }
 
 }

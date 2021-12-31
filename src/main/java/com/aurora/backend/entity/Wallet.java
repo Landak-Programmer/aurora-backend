@@ -71,7 +71,7 @@ public class Wallet extends JpaEntity<Long> {
 
         ADD("add"),
         MINUS("minus"),
-        TRASACTION("transaction");
+        TRANSACTION("transaction");
 
         private final String name;
 
