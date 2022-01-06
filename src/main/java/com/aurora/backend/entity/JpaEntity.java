@@ -2,6 +2,7 @@ package com.aurora.backend.entity;
 
 import com.aurora.backend.entity.core.EntityField;
 import com.aurora.backend.exception.PreUpdateException;
+import com.aurora.backend.utils.StringHelper;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
@@ -52,20 +53,11 @@ public abstract class JpaEntity<ID extends Serializable> implements IEntity<ID>,
     }
 
     public static String getWriteFieldMethodName(final String fieldName) {
-        return String.format("set%s", capitalize(fieldName));
+        return String.format("set%s", StringHelper.capitalize(fieldName));
     }
 
     public static String getReadFieldMethodName(final String fieldName) {
-        return String.format("get%s", capitalize(fieldName));
-    }
-
-    private static String capitalize(final String str) {
-        if (str == null || str.isEmpty()) {
-            return str;
-        }
-        return str
-                .substring(0, 1)
-                .toUpperCase() + str.substring(1);
+        return String.format("get%s", StringHelper.capitalize(fieldName));
     }
 
 }

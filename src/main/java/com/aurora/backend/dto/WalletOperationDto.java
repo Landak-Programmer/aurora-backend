@@ -1,5 +1,7 @@
 package com.aurora.backend.dto;
 
+import com.aurora.backend.entity.Transaction;
+
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
@@ -13,4 +15,5 @@ public class WalletOperationDto {
     public String reference;
     public Long addWalletId;
     public Long minusWalletId;
+    public Transaction.Type type;
 }

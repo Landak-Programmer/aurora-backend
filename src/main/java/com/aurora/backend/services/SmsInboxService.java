@@ -1,6 +1,7 @@
 package com.aurora.backend.services;
 
 import com.aurora.backend.entity.SmsInbox;
+import com.aurora.backend.entity.Transaction;
 import com.aurora.backend.entity.User;
 import com.aurora.backend.entity.Wallet;
 import com.aurora.backend.exception.AmountNotEnoughException;
@@ -60,9 +61,9 @@ public class SmsInboxService extends BaseEntityService<SmsInbox, Long> {
             final BigDecimal smartAmount = this.deduceAmount(localMessage);
 
             if (receiveScore > sendScore) {
-                walletService.add(wallet.getId(), smartAmount, "SmartContext sms add transaction");
+                walletService.add(wallet.getId(), smartAmount, "SmartContext sms add transaction", Transaction.Type.SPENDING);
             } else {
-                walletService.minus(wallet.getId(), smartAmount, "SmartContext sms minus transaction");
+                walletService.minus(wallet.getId(), smartAmount, "SmartContext sms minus transaction", Transaction.Type.SPENDING);
             }
         }
     }

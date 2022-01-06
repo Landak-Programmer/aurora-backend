@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class WalletService extends BaseEntityService<Wallet, Long> {
@@ -43,24 +44,29 @@ public class WalletService extends BaseEntityService<Wallet, Long> {
     public void operation(final WalletOperationDto dto) throws AmountNotEnoughException {
         final String operation = dto.operation.toLowerCase();
         if (Wallet.Transaction.ADD.getName().equals(operation)) {
-            add(dto.addWalletId, dto.amount, dto.reference);
+            add(dto.addWalletId, dto.amount, dto.reference, dto.type);
         } else if (Wallet.Transaction.MINUS.getName().equals(operation)) {
-            minus(dto.minusWalletId, dto.amount, dto.reference);
+            minus(dto.minusWalletId, dto.amount, dto.reference, dto.type);
         } else if (Wallet.Transaction.TRANSACTION.getName().equals(operation)) {
-            transaction(dto.addWalletId, dto.minusWalletId, dto.amount, dto.reference);
+            transaction(dto.addWalletId, dto.minusWalletId, dto.amount, dto.reference, dto.type);
         } else {
             throw new UnsupportedOperationException("Unsupported operation!");
         }
     }
 
     @Transactional
-    public void transaction(final Long addId, final Long minusId, final BigDecimal amount, final String reference) throws AmountNotEnoughException {
-        minus(minusId, amount, reference);
-        add(addId, amount, reference);
+    public void transaction(
+            final Long addId,
+            final Long minusId,
+            final BigDecimal amount,
+            final String reference,
+            final Transaction.Type type) throws AmountNotEnoughException {
+        minus(minusId, amount, reference, type);
+        add(addId, amount, reference, type);
     }
 
     @Transactional
-    public void add(final Long id, final BigDecimal amount, final String reference) {
+    public void add(final Long id, final BigDecimal amount, final String reference, final Transaction.Type type) {
         final Wallet wallet = super.getById(id);
 
         // transaction
@@ -75,7 +81,7 @@ public class WalletService extends BaseEntityService<Wallet, Long> {
     }
 
     @Transactional
-    public void minus(final Long id, final BigDecimal amount, final String reference) throws AmountNotEnoughException {
+    public void minus(final Long id, final BigDecimal amount, final String reference, final Transaction.Type type) throws AmountNotEnoughException {
         final Wallet wallet = super.getById(id);
         if (wallet.getAmount().compareTo(amount) < 0) {
             throw new AmountNotEnoughException(String.format("Amount for walletId %s not enough!", id));
@@ -93,7 +99,6 @@ public class WalletService extends BaseEntityService<Wallet, Long> {
     }
 
     /**
-     *
      * fixme: support all user!
      *
      * @param message
@@ -104,5 +109,9 @@ public class WalletService extends BaseEntityService<Wallet, Long> {
             return walletRepository.findByUserIdAndName((Long) userAware.getId(), "Bank Islam");
         }
         throw new SmartContextException("Unable to deduce the bank!");
+    }
+
+    public List<Wallet> getWalletsByCred() {
+       return walletRepository.findByUserId((Long) getAuthenticatedUser().getId());
     }
 }
