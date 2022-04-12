@@ -44,3 +44,16 @@ CREATE TABLE `contact` (
    KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `voice_command` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `command` varchar(255) NOT NULL,
+  `response_voice` varchar(255) NOT NULL,
+  `response_action` varchar(255) NOT NULL,
+  `response_type` varchar(255) NOT NULL,
+  `precede_command_id` bigint(20),
+  `param_tag` varchar(255),
+  `is_chain` bit(1) NOT NULL,
+  `last_updated` datetime NOT NULL DEFAULT current_timestamp(),
+  `date_created` datetime NOT NULL DEFAULT current_timestamp(),
+   PRIMARY KEY (`id`),
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

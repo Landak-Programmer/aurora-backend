@@ -26,6 +26,7 @@ public abstract class JpaEntity<ID extends Serializable> implements IEntity<ID>,
     @JsonIgnore
     private LocalDateTime lastUpdated = LocalDateTime.now();
 
+    // todo: generic them???
     public Object getField(final String fieldName) {
         try {
             final String raadFieldMethodName = getReadFieldMethodName(fieldName);
@@ -34,7 +35,6 @@ public abstract class JpaEntity<ID extends Serializable> implements IEntity<ID>,
                     .getMethod(raadFieldMethodName);
             return method.invoke(this);
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            // todo: specific exception
             throw new PreUpdateException(e.getMessage());
         }
     }
@@ -47,7 +47,6 @@ public abstract class JpaEntity<ID extends Serializable> implements IEntity<ID>,
                     .getMethod(writeFieldMethodName, classType);
             method.invoke(this, value);
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            // todo: specific exception
             throw new PreUpdateException(e.getMessage());
         }
     }
